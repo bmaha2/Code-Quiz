@@ -1,2 +1,3 @@
 # Code-Quiz
-#pseudo-code
+pseudo-code
+
