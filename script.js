@@ -153,28 +153,6 @@ var questions = [
 
         ]
     }
-    ,
-    {
-        text: "example question11",
-        answers: [
-            { text: "ans 1", correct: false },
-            { text: "ans 2", correct: true },
-            { text: "ans 3", correct: false },
-            { text: "ans 4", correct: false },
-
-        ]
-    }
-    ,
-    {
-        text: "example question12",
-        answers: [
-            { text: "ans 1", correct: false },
-            { text: "ans 2", correct: true },
-            { text: "ans 3", correct: false },
-            { text: "ans 4", correct: false },
-
-        ]
-    }
 ];
 
 //varibles to get hold of the nodes
@@ -188,7 +166,8 @@ var activeEl = document.querySelector(".active");
 
 //initial setup
 var gameTimer = 60;
-var currentQuestion = 0;
+var currentQuestionIndex = 0;
+
 var score = 0;
 
 //wrapper to display the DOM
@@ -224,24 +203,26 @@ function displayInfo() {
     startEl.appendChild(btnEl);
     wrapper();
 }
-//displaying the fisrt page
+//calling displayInfo() for displaying the fisrt page
 displayInfo();
 
 //event handler set to start button to start the game
 startEl.addEventListener("click", function (e) {
-
-   //game timer    
+    //game timer    
     setInterval(() => {
         timerEl.textContent = "Time Left: " + gameTimer;
         gameTimer--;
     }, 1000);
+    
+        listQuestion(currentQuestionIndex);
+    
 
-    listQuestion();
-    currentQuestion++;
+
 });
-function listQuestion() {
+function listQuestion(currentQuestionIndex) {
+
     startEl.style.display = "none";
-    var obj = questions[currentQuestion];
+    var obj = questions[currentQuestionIndex];
     var divQuestion = document.createElement("div");
     divQuestion.setAttribute("class", "question");
     var questionHead = document.createElement("h2");
@@ -250,6 +231,7 @@ function listQuestion() {
     divQuestion.appendChild(questionHead);
     var answerList = document.createElement("div");
     answerList.setAttribute("id", "ans-list");
+
 
     for (var i = 0; i < obj.answers.length; i++) {
         var btn = document.createElement("button");
@@ -261,35 +243,61 @@ function listQuestion() {
         answerList.appendChild(btn);
     }
 
+
     divQuestion.appendChild(answerList);
     boxEl.appendChild(divQuestion);
     var answerListEl = document.getElementById("ans-list")
-    
-    var buttonsCount = answerListEl.getElementsByTagName("BUTTON");
-    
-    answerListEl.addEventListener("click", function(e) {
+
+
+
+    answerListEl.addEventListener("click", function (e) {
+        e.preventDefault();
         if (e.target.nodeName == "BUTTON") {
             displayRightWrong();
             var rightWrongEl = document.querySelector(".rightWrong");
-           // alert(e.target.textContent);
-            if (e.target.hasAttribute("class","true")) {
-               // alert("CORRECT!");
-               rightWrongEl.textContent = "Correct!" 
-               score ++;
-               scoreEl.textContent = "Score: " + score;              
+            // alert(e.target.textContent);
+            if (e.target.hasAttribute("class", "true")) {
+                // alert("CORRECT!");
+                rightWrongEl.textContent = "Correct!"
+                score++;
+                scoreEl.textContent = "Score: " + score;
             }
             else {
                 //alert("WRONG!")
-                rightWrongEl.textContent ="Wrong!";
+                rightWrongEl.textContent = "Wrong!";
             }
         }
-    })
+        
+        clearCurrentQuestion();
+        currentQuestionIndex++;
+        nextQuestion(currentQuestionIndex);
+    });
+
 }
 //to display whether the answer is correct or incorrect in a label
-function displayRightWrong() {
-    var rightWrong = document.createElement("div");    
-    var displayRightWrong = document.createElement("label");
-    displayRightWrong.setAttribute("class","rightWrong");
-    rightWrong.appendChild(displayRightWrong);
+function displayRightWrong() {    
+    var rightWrong = document.createElement("label");
+    rightWrong.setAttribute("class", "rightWrong");    
     boxEl.appendChild(rightWrong);
+}
+
+//to clear current question
+function clearCurrentQuestion() {
+    var divQuestionEl = document.querySelector(".question");
+    divQuestionEl.parentNode.removeChild(divQuestionEl);
+    
+
+}
+//to display nextQuestion
+function nextQuestion(currentQuestionIndex) {
+    if (currentQuestionIndex <= questions.length){
+        listQuestion(currentQuestionIndex);
+    }
+    
+}
+
+//to display final score
+function finalScore() {
+    alert("Your Score");
+
 }
