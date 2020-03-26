@@ -189,6 +189,7 @@ var activeEl = document.querySelector(".active");
 //initial setup
 var gameTimer = 60;
 var currentQuestion = 0;
+var score = 0;
 
 //wrapper to display the DOM
 function wrapper() {
@@ -205,7 +206,7 @@ function wrapper() {
 
 //Display info initial page
 function displayInfo() {
-    
+
     //varibles to create tags to display when the app starts    
     var h2El = document.createElement("h2");       //h2 for to display play
     var pEl = document.createElement("p");         //info of game
@@ -215,96 +216,80 @@ function displayInfo() {
     h2El.textContent = "Play the code quiz game";
     pEl.textContent = "The game has 10 questions and you have 60 seconds to complete the game.If wrong answer is selected you will lose time by 5 seconds. Have fun!";
     btnEl.textContent = "START";
-   
-    
+
+
     //inside-box (h2, p and start button)    
-    startEl.appendChild(h2El);    
+    startEl.appendChild(h2El);
     startEl.appendChild(pEl);
     startEl.appendChild(btnEl);
     wrapper();
-    
 }
 //displaying the fisrt page
 displayInfo();
 
 //event handler set to start button to start the game
 startEl.addEventListener("click", function (e) {
-   
-    //trying to create active class such that the click will take display next page
 
-   
-    //game timer    
+   //game timer    
     setInterval(() => {
         timerEl.textContent = "Time Left: " + gameTimer;
         gameTimer--;
-    }, 1000);  
-    
+    }, 1000);
+
     listQuestion();
     currentQuestion++;
- });
-
-
-function listQuestion() {  
-
-    
+});
+function listQuestion() {
     startEl.style.display = "none";
     var obj = questions[currentQuestion];
     var divQuestion = document.createElement("div");
-    divQuestion.setAttribute("class","question");
-    var labelQuestion = document.createElement("label");
-    labelQuestion.setAttribute("id", "question-head")
-    labelQuestion.textContent = obj.text;
-    divQuestion.appendChild(labelQuestion);
-    
-    
+    divQuestion.setAttribute("class", "question");
+    var questionHead = document.createElement("h2");
+    questionHead.setAttribute("id", "question-head");
+    questionHead.textContent = obj.text;
+    divQuestion.appendChild(questionHead);
+    var answerList = document.createElement("div");
+    answerList.setAttribute("id", "ans-list");
+
     for (var i = 0; i < obj.answers.length; i++) {
         var btn = document.createElement("button");
-        btn.setAttribute("id","btn")
-        
+        btn.setAttribute("id", "btn" + [i]);
         btn.textContent = btn.textContent + obj.answers[i].text;
         if (obj.answers[i].correct) {
-            btn.setAttribute("class", "true");            
-        } 
-        divQuestion.appendChild(btn);
+            btn.setAttribute("class", "true");
+        }
+        answerList.appendChild(btn);
     }
-    
-    
-    boxEl.appendChild(divQuestion);    
-    var btnEl = document.getElementById("btn");
-    btnEl.addEventListener("click", function(e) {
-        e.preventDefault();
 
-        if (e.tagName === "BUTTON") {
-            alert("clicked" + e.target.textContent);  // Check if the element is a LI
-        //     
-      }
-    //   var items = ul.getElementsByTagName("li");
-    //       for (var i = 0; i < items.length; i++) {
-    //           if (items[i].hasAttribute("true")) {
-    //               alert("correct");
-    //           }
-    //           else {
-    //               alert("incorrect");
-    //           }
-    //       }
+    divQuestion.appendChild(answerList);
+    boxEl.appendChild(divQuestion);
+    var answerListEl = document.getElementById("ans-list")
     
-var buttonsCount = btn.length;
-for (var i = 0; i <= buttonsCount; i++) {
-    btn[i].onclick = function(e) {
-        alert(this.id);
-    };
+    var buttonsCount = answerListEl.getElementsByTagName("BUTTON");
+    
+    answerListEl.addEventListener("click", function(e) {
+        if (e.target.nodeName == "BUTTON") {
+            displayRightWrong();
+            var rightWrongEl = document.querySelector(".rightWrong");
+           // alert(e.target.textContent);
+            if (e.target.hasAttribute("class","true")) {
+               // alert("CORRECT!");
+               rightWrongEl.textContent = "Correct!" 
+               score ++;
+               scoreEl.textContent = "Score: " + score;              
+            }
+            else {
+                //alert("WRONG!")
+                rightWrongEl.textContent ="Wrong!";
+            }
+        }
+    })
 }
-
-     });
+//to display whether the answer is correct or incorrect in a label
+function displayRightWrong() {
+    var rightWrong = document.createElement("div");    
+    var displayRightWrong = document.createElement("label");
+    displayRightWrong.setAttribute("class","rightWrong");
+    rightWrong.appendChild(displayRightWrong);
+    boxEl.appendChild(rightWrong);
 }
-//  function hideNode(node) {
-//       node.style.display= "block";
-//  }
-//  function displayNode(node) {
-//     var current = document.querySelector(".active");
-//     var next = current.nextElementSibling;
-//     if (next) {
-//         current.classList.remove("active");
-//         next.classList.add("active");
-//     }     
-//  }
