@@ -38,7 +38,7 @@ body {
     margin:10px auto;
     padding: 10px;
 }
-.active {
+.active, #high-score {
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
@@ -53,6 +53,7 @@ button {
     background-color:blueviolet;
     opacity: .90;
     color: #fff;
+    cursor: pointer;
 }
 button:hover {
     background-color:lightseagreen;
@@ -77,3 +78,24 @@ button:hover {
     font-style: italic;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
+input[type=submit]{
+    width: 40%;
+    padding: 5px;
+    border-radius: 5px;
+    border: solid 1px #000;
+    margin-top: 5px;
+    background-color:blueviolet;
+    opacity: .90;
+    color: #fff;
+    cursor: pointer;
+}
+input[type=submit]:hover {
+    background-color:lightseagreen;
+    opacity: .70;
+}
+#high-score label, #high-score h2, #high-score button {
+    width: 80%;
+    margin: 5px;    
+}
+ 
+   

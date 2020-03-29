@@ -1,48 +1,4 @@
-
-/**
- * 10 questions
- * list 4 possible answers
- * 
- Question:
- text 
- 4 answers
-
-text / correct?
- 
-data to track
-timer
-current question no
-score correct/incorrect
-
-when game starts 
-curr ques = 0
-timer 60;
-score = 0
-game loop {
-render cuurent question 
-next;
-when user cliks the answer
-if (correct)
-score ++
-else
-penalty reduce timer
-}
-next ques
-increment the question index++
-check for next question
-if (true) {
-    repeat game loop until run of question timer to 
-    
-} esle {
-    handle end of game.
-}
-
-end of  game;
-display scores
-ask if they want to play again
- 
- */
-
+//hold questions and answers
 var questions = [
     {
         text: "What is a full-stack?",
@@ -159,27 +115,25 @@ var boxEl = document.querySelector(".inside-box");   //for styling
 var activeEl = document.querySelector(".active");
 var displayEl = document.getElementById("display");      // div for main display excluding timer and score
 var questionHeadEl = document.getElementById("question-head");
-var answerListEl = document.getElementById("l.ist");
+var answerListEl = document.getElementById("ans-list");
 var messageEl = document.getElementById("message-container");
 
 //initial setup
-var time = 60;
+var time = 100;
 var gameTimer;
 var currentQuestionIndex = 0;
 var score = 0;
 
-
-
-//Display info initial page
-function displayInfo() {
+//Display startGame
+function startGame() {
     //varibles to create tags to display when the app starts    
     var h2El = document.createElement("h2");       //h2 for to display play
     var pEl = document.createElement("p");         //info of game
     var btnEl = document.createElement("button")   //to start the game
     btnEl.setAttribute("id", "start");
     //text contents of the corresponding tags
-    h2El.textContent = "Play the code quiz game";
-    pEl.textContent = "The game has 10 questions and you have 60 seconds to complete the game.If wrong answer is selected you will lose time by 5 seconds. Have fun!";
+    h2El.textContent = "Welcome to code quiz game";
+    pEl.textContent = "The game has 10 questions and you have 100 seconds to complete the game. Click START button to play the game. Have fun!";
     btnEl.textContent = "START";
     //inside-box (h2, p and start button)    
     displayEl.appendChild(h2El);
@@ -188,8 +142,8 @@ function displayInfo() {
     boxEl.appendChild(displayEl);
     btnEl.addEventListener("click", listQuestion);
     btnEl.addEventListener("click", Timer);
-
 }
+//timer for the game
 function Timer() {
     gameTimer = setInterval(function () {
         timerEl.textContent = "Time Left: " + time;
@@ -199,27 +153,18 @@ function Timer() {
             // return;
         }
     }, 1000);
-
 }
 
-//calling displayInfo() for displaying the first page
-displayInfo();
+//calling startGame
+startGame();
 function listQuestion() {
-
-
     var currentQuestion = questions[currentQuestionIndex];
-    console.log(currentQuestion);
     if (!currentQuestion) {
         return endGame();
     }
     displayEl.style.display = "none";
     var questionDiv = createQuestion(currentQuestion);
-
-
     boxEl.prepend(questionDiv);
-    //to display whether the answer is correct or incorrect in a label
-    //var answerListEl = document.getElementById("l.ist");
-
 }
 function createQuestion(currentQuestion) {
     var divQuestion = document.createElement("div");
@@ -229,7 +174,7 @@ function createQuestion(currentQuestion) {
     questionHead.textContent = currentQuestion.text;
     divQuestion.appendChild(questionHead);
     var answerList = document.createElement("div");
-    answerList.setAttribute("id", "l.ist");
+    answerList.setAttribute("id", "ans-list");
 
     for (var i = 0; i < currentQuestion.answers.length; i++) {
         var btn = document.createElement("button");
@@ -242,7 +187,6 @@ function createQuestion(currentQuestion) {
         answerList.appendChild(btn);
     }
     divQuestion.appendChild(answerList);
-   // var divQuestionEl = document.querySelector(".question");
     divQuestion.addEventListener("click", function (event) {
         event.preventDefault();
         checkAnswer(event.target);
@@ -253,7 +197,6 @@ function createQuestion(currentQuestion) {
         }
     });
     return divQuestion;
-
 }
 
 function checkAnswer(target) {
@@ -262,25 +205,19 @@ function checkAnswer(target) {
     selectedAnswer.setAttribute("class", "selected");
 
     if (target.matches("BUTTON")) {
-
-
-        //alert(e.target.textContent);
-
         if (target.hasAttribute("class", "true")) {
             // alert("CORRECT!");
             selectedAnswer.textContent = "Correct!"
             score++;
-            scoreEl.textContent = "Score: " + score;
+            //scoreEl.textContent = "Score: " + score;
         }
         else {
             //alert("WRONG!")
             selectedAnswer.textContent = "Wrong!";
+            time -= 5;
         }
-
     }
     messageEl.appendChild(selectedAnswer);
-
-
 }
 
 function clearMessage() {
@@ -291,21 +228,77 @@ function endGame() {
     //stop the timer
     clearInterval(gameTimer);
     finalScore();
-
 }
-//to display nextQuestion
-// function nextQuestion() {
-//     questionHead.parentNode.removeChild(questionHead);
-//     answerList.parentNode.removeChild(answerList);
 
-//     if (currentQuestionIndex < questions.length) {
-//         listQuestion();
-//     }
-//     if (currentQuestionIndex >= questions.length) {
-//         finalScore();
-//     }
-// }
 //to display final score
 function finalScore() {
-    alert(scoreEl.textContent);
+    //alert(scoreEl.textContent);
+    var doneDiv = document.createElement("div");    
+    var allDone = document.createElement("h2");
+    allDone.textContent = "ALL DONE!"
+    var finalScoreDisp = document.createElement("p");
+    finalScoreDisp.textContent = "Your final score: " + score;
+    var formSubmit = document.createElement("form");
+    formSubmit.setAttribute("method", "POST");
+    var inputNameField = document.createElement("label");
+    inputNameField.textContent = "Your Initial:"
+    var inputName = document.createElement("input");
+    inputName.setAttribute("type", "text");
+    var submitBtn = document.createElement("button");
+    submitBtn.textContent = "Submit";
+   doneDiv.appendChild(allDone);
+    doneDiv.appendChild(finalScoreDisp);
+    formSubmit.appendChild(inputNameField);
+    formSubmit.appendChild(inputName);
+    formSubmit.appendChild(submitBtn);
+    doneDiv.appendChild(formSubmit);
+    boxEl.appendChild(doneDiv)
+    submitBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        doneDiv.parentNode.removeChild(doneDiv);
+        
+        
+        var highScoreDiv = document.createElement("div");
+        highScoreDiv.setAttribute("id", "high-score");
+        highScore = document.createElement("h2");
+        highScore.textContent = "High Scores";
+        highScoreDiv.appendChild(highScore);
+        var scoreList = document.createElement("label");
+        
+        
+        
+        inputName.value = inputName.value + " - " + score;
+        //set new submission
+        localStorage.setItem("user", JSON.stringify(inputName.value));
+        //get recent submission
+        
+        scoreList.textContent = JSON.parse(localStorage.getItem("user"));
+        highScoreDiv.appendChild(scoreList);
+        
+        var goBackBtn = document.createElement("button");
+        goBackBtn.textContent = "Go Back";
+        var clearScore = document.createElement("button");
+        clearScore.textContent = "Clear highscores";
+        highScoreDiv.appendChild(goBackBtn);
+        highScoreDiv.appendChild(clearScore);
+        boxEl.appendChild(highScoreDiv);
+
+        clearScore.addEventListener("click", function(e){
+            e.preventDefault();
+            scoreList.textContent = "";
+
+        })
+        goBackBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            restartGame();
+            
+        })
+
+
+    })
+  
+}function restartGame() {
+    startGame();
 }
+
+  
